@@ -1,0 +1,22 @@
+<!--apple317-->
+<article class="choic"><div class="cho_01"><img src="/images/addlo.png" class="imlog"></div><div class="cho_02"><p>添加手机久久健康网至桌面</p><p>点击下面的“<img src="/images/homear.png" class="doimg">”</p><p>然后选择“<span>添加至主屏幕</span>”</p><img src="/images/nolo.png"></div><img src="/images/err.png" class="erro"></article>
+
+<script type="text/javascript">
+    var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+    var intervalID = 0;
+    if (isiOS) {
+        function tilim() {
+            $('.choic').show();
+            clearInterval(intervalID);
+        }
+        intervalID = setInterval("tilim()", 10000);
+    }
+    $(function () {
+        $('.choic img.erro').click(function () {
+            $('.choic').hide();
+        });
+    });
+</script>

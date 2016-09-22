@@ -1,0 +1,60 @@
+@charset "utf-8";
+/* CSS Document */
+*{ margin:0; padding:0;} 
+html{ font-size:310%;}
+/*@media screen and (min-width: 414px) {html{ font-size:330%;}}*/
+body{-webkit-text-size-adjust:100%;font-family:"Microsoft YaHei",Arial,Helvetica,sans-serif; color:#333;}
+article， aside， details， figcaption， figure， footer， header， hgroup， menu， nav， section { display: block; }
+a{ text-decoration: none; display:inline-block; color:#333;-webkit-tap-highlight-color:transparent;}
+h2,h3,h4{ font-weight:normal;}
+img,input{ border:none;}
+ul{ list-style:none;}
+.fl{ float:left;}
+.fr{ float:right;}
+.clear{ clear:both;}
+.thre{ height:.2rem; background:#dfdfdf;}
+.shode img{ width:100%; display:block;}
+h2.notice{ height:.9rem; line-height:.9rem; color:#fff; font-size:.36rem; background:#56c8fc; margin-top:.5rem; letter-spacing:1px; padding-left:.44rem; position:relative;}
+h2.notice:after{ content:""; position:absolute; left:.2rem; top:.27rem; height:.36rem; width:4px; background:#fff;}
+.order,.choice,.maksu{ width:95%; margin:0 auto;}
+.order li{ border-bottom:1px solid #e1e1e1; padding:15px 0 15px 0;}
+.order li p{ font-size:14px; color:#999;}
+.order li p span{ margin-right:5px;}
+.order li h3{color:#ff6b00; font-size:15px; margin-top:5px; line-height:24px;}
+.order li h3 span{color:#000;}
+h2.back{ background:#f23030;}
+.choice{ margin:.25rem auto .4rem auto;}
+.choice p{font-size:.3rem; color:#666; margin-bottom:.2rem;}
+.price{ overflow:hidden;}
+.price span{ float:left; font-size:.38rem; color:#f01414; font-weight:bold; padding-left:5%; background:url(../images/corr.jpg) no-repeat left center; background-size:.32rem .32rem; width:26%;}
+.price div{ float:right; width:69%; font-size:.32rem; clor:#000; line-height:24px;}
+
+.suord{ margin:.5rem auto 1.8rem auto; width:95%;}
+.suord p{ margin-bottom:.43rem; overflow:hidden;}
+.suord p label,.suord p input,.suord select{ float:left;height:.7rem; line-height:.7rem;}
+.suord p label{ font-size:.3rem; color:#000; text-align:right; width:25%;}
+.suord p input,.suord textarea,.suord select{ width:71%; font-family:"microsoft YaHei"; font-size:.3rem; text-indent:5px; background:#f5f5f5; border-radius:4px; border:none;}
+.suord input[type="submit"],a.gopur{ display:block; width:80%; margin:.2rem auto 0 auto;height:.8rem; font-family:"microsoft YaHei"; border-radius:4px; line-height:.8rem; background:#f23030; font-size:.34rem; color:#fff; text-align:center;-webkit-appearance: none; letter-spacing:1px;}
+.comm{ position:fixed; left:0; bottom:0; width:100%; background:#fff; height:1.13rem; line-height:1.13rem; overflow:hidden; border-top:1px solid #e1e1e1;}
+.comm div{ float:left; width:50%; overflow:hidden;}
+.comm div:first-child a{ float:left; width:50%; text-align:center; font-size:.3rem; color:#666; padding-top:.3rem;}
+.comm div:first-child a:first-child{ border-right:1px solid #e1e1e1;box-sizing:border-box;background:url(../images/serv_01.jpg) no-repeat center .14rem; background-size:.5rem .5rem;}
+.comm div:first-child a:last-child{background:url(../images/serv_02.jpg) no-repeat center .14rem; background-size:.48rem .45rem;}
+.comm div:last-child a{ display:block; background:#f23030; color:#fff; font-size:.36rem; width:100%; text-align:center; letter-spacing:2px;}
+.suord textarea{ border:none; padding:5px 1%; width:69%; line-height:22px; resize:vertical; text-indent:0;}
+.suord select{ -webkit-appearance: none;}
+/*订单核对*/
+header{ font-size:.36rem; text-align:center; height:.86rem; line-height:.86rem; letter-spacing:1px; border-bottom:1px solid #e1e1e1; position:relative;}
+header a{ display:block; position:absolute; left:.2rem; top:0; background:url(../images/arr.png) no-repeat left center; height:.86rem; width:.8rem; background-size:.24rem .42rem;}
+.maksu{ margin:.8rem auto; font-size:.32rem;}
+.maksu li{ overflow:hidden; color:#000; margin-bottom:.4rem;}
+.maksu li label{ float:left; width:25%; text-align:center; color:#666; padding-left:5%; background:url(../images/corr.jpg) no-repeat left center; background-size:.3rem .3rem;}
+.maksu li div{ float:left; width:70%; line-height:24px;}
+.maksu li label span{ padding:0 15px;}
+.maksu li label em{ padding:0 4px;}
+.maksu li div b{ font-size:.46rem; color:#f01414;}
+.maksu li:last-child label{ background:none;}
+.corre{ margin:1.2rem auto 1rem auto; text-align:center; font-size:.32rem;}
+.corre div{ width:1.1rem; height:1.1rem; margin:0 auto .2rem auto;border-radius:100%; background:#6bb343 url(../images/cor.png) no-repeat center center; background-size:.64rem .4rem;}
+@media screen and (max-width: 320px) {.price div{ width:65%;} .maksu{ font-size:.3rem;}}
+

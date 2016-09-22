@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title><{$metaTitle}></title>
+    <meta name="keywords" content="<{$metaKeywords}>" />
+    <meta name="description" content="<{$metaDescription}>" />
+    <link rel="canonical" href="<{$pc_zhuanti_search_url}>">
+    <meta content="width=device-width,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="/css/hot.css">
+    <link rel="stylesheet" type="text/css" href="<{$smarty.const.__DOMAINURL__}>/css/other.css?201608221">
+</head>
+<body>
+    <div class="heout"><header><a href="<{$smarty.const.__DOMAINURL__}>" class="lin_01"></a><span>久久专题</span><a href="javascript:void(0)" class="lin_02"></a></header></div>
+    <!--弹出 开始-->
+        <{include file="navigation/fast_navigation.html"}>
+    <!--弹出 结束-->
+    <article class="shocu"><a href="<{$smarty.const.__DOMAINURL__}>">久久首页</a>><a href="<{$smarty.const.__DOMAINURL__}>/zhuanti/">久久专题</a>><a>内容</a></article>
+    <!--专题内容 开始-->
+    <!--专题内容 开始-->
+    <section class="file">
+        <h3 class="projec">久久专题</h3>
+        <div class="lertit">关于<h1><{QLib_Utils_String::cutString($search_name, 9,0)}></h1>专题</div>
+    </section>
+    <article>
+        <div>
+            <script type="text/javascript">
+              var cpro_id="u2545540";
+              (window["cproStyleApi"] = window["cproStyleApi"] || {})[cpro_id]={at:"3",hn:"0",wn:"0",imgRatio:"1.7",scale:"20.6",pat:"6",tn:"template_inlay_all_mobile_lu_native",rss1:"#FFFFFF",adp:"1",ptt:"0",titFF:"%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91",titFS:"14",rss2:"#000000",titSU:"0",ptbg:"70",ptp:"0"}
+            </script>
+            <script type="text/javascript" src="http://jsm.9939.com/cpro/ui/cm.js"></script>
+        </div>
+        <{if $articles_one}>
+        <{foreach from=$articles_one  key=kk item=art}>
+            <{if $kk%3 == 0}>
+                <hgroup><h2><a href="<{$art.url}>" title="<{$art.title}>"><{$art.title}></a></h2>
+            <{elseif $kk%3 == 2}>
+                <a href="<{$art.url}>" title="<{$art.title}>"><{$art.title}></a></p></hgroup>
+            <{else}>
+                <p><a href="<{$art.url}>" title="<{$art.title}>"><{$art.title}></a><span>|</span>
+            <{/if}>
+        <{/foreach}>
+        <{/if}>
+        <{if $articles_pic}>
+            <{foreach from=$articles_pic  key=kk item=art}>
+                <div class="mspio"><div class="olps"><a href="<{$art.url}>"  title="<{$art.title}>"><img  src="<{$smarty.const.__DOMAINURL__}>/images/zxpic.jpg"  alt="<{$art.title}>" title="<{$art.title}>"/></a></div><span><a href="<{$art.url}>" ><{$art.title}></a></span></div>
+            <{/foreach}>
+        <{/if}>
+    </article>
+
+    <article class="feature">
+        <article class="recom newlis harco">
+            <{if $articles_two}>
+            <{foreach from=$articles_two key=kk item=art}>
+                <a href="<{$art.url}>" title="<{$art.title}>"><{$art.title}></a>
+            <{/foreach}>
+            <{/if}>
+        </article>
+        <div class="admos">
+            <script type="text/javascript">
+             /*资讯热搜wap端内容页更多上方*/
+             var cpro_id = "u2452096";
+            </script>
+            <script type="text/javascript" src="http://jsm.9939.com/cpro/ui/cm.js"></script>
+        </div>
+        <div class="reinf">
+            <{if count($articles_three) > 0}>
+                <p class="desmore">相关资讯</p>
+            <{/if}>
+        </div>
+        <article class="recom unili renews conart">
+            <{if $articles_three}>
+                <{foreach from=$articles_three key=kk item=art}>
+                    <a href="<{$art.url}>" title="<{$art.title}>"><p><{$art.title}></p><p><{$art.description|strip:" "}></p></a>
+                <{/foreach}>
+            <{/if}>
+        </article>
+        <div class="viewmore">
+            <{if $total > 18}>
+                <a href="<{$searchurl}><{$search}>/1/">更多相关内容>></a>  
+            <{/if}>
+        </div>   
+    </article>  
+    <!--专题 结束-->
+    <article>
+        <h1 class="amtit">相关热词</h1>
+        <ul class="reahots">
+            <{if $relateWords}>
+            <{foreach from=$relateWords key=kk item=keyword}>
+                <li><a href="<{$searchurl}><{$keyword.pinyin}>/"  title="<{$keyword.keywords}>"><{$keyword.keywords|truncate:8:'':true}></a></li>
+            <{/foreach}>
+            <{/if}>
+        </ul>
+    </article>
+
+    <div class="advim mTop">
+        <script type="text/javascript">
+        var cpro_id="u2442390";
+        (window["cproStyleApi"] = window["cproStyleApi"] || {})[cpro_id]={at:"3",hn:"0",wn:"0",imgRatio:"1.7",scale:"20.12",pat:"6",tn:"template_inlay_all_mobile_lu_native",rss1:"#FFFFFF",adp:"1",ptt:"0",titFF:"%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91",titFS:"14",rss2:"#000000",titSU:"0",ptbg:"70",ptp:"0"}
+        </script>
+        <script type="text/javascript" src="http://jsm.9939.com/cpro/ui/cm.js"></script>
+
+    </div>
+
+    <!--footer 开始-->
+
+    <!--专题热搜底部-->
+    <!--footer 开始-->
+    <{include file="footer/zhuanti_footer.html"}>
+    <!--footer 结束-->
+    <script type="text/javascript" src="<{$smarty.const.__DOMAINURL__}>/scripts/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="<{$smarty.const.__DOMAINURL__}>/scripts/top_nav.js"></script>
+    <!-- 百度弹出广告 Start -->
+    <{include file="ads/ads_askAnswerDetail_js.html"}>
+    <!-- 百度弹出广告 End -->    
+    <!-- uc ads -->
+    <{nocache}>
+    <{if isset($ads_uc) && !empty($ads_uc)}>
+    <{$ads_uc}>
+    <{/if}>
+    <{/nocache}>
+    <!-- uc ads -->
+    
+    <!-- ads 4567 -->
+    <{nocache}>
+    <{if isset($ads_4567) && !empty($ads_4567)}>
+    <{$ads_4567}>
+    <{/if}>
+    <{/nocache}>
+    <!-- ads 4567 -->
+</body>
+</html>
+
