@@ -245,12 +245,30 @@ class BabyController extends App_Controller_Action {
     }
     
     private function search_relarticle($wd, $page, $size) {
-        return App_Model_Search::search_article($wd, $page, $size);
+        $config = $this->getExplainConfig();
+        $explain_ext_config = $config['explain_ext_config'];
+        $explainflag = $config['explainflag'];
+        $condition = array();
+        return App_Model_Search::search_article($wd, $page, $size,$condition,$explainflag,$explain_ext_config);
     }
     
     //相关热词
     public function relate_words($wd, $page, $size) {
+        $config = $this->getExplainConfig();
+        $explain_ext_config = $config['explain_ext_config'];
+        $explainflag = $config['explainflag'];
         $filter_array = $this->getFilterArray();
-        return App_Model_Search::search_words_all($wd, $page, $size,$filter_array);
+        return App_Model_Search::search_words_all($wd, $page, $size,$filter_array,$explainflag,$explain_ext_config);
+    }
+    
+    private function getExplainConfig(){
+        $explain_ext_config = array(
+            'is_ext_words'=>1
+        );
+        $explainflag = 1;
+        return array(
+            'explainflag'=>$explainflag,
+            'explain_ext_config'=>$explain_ext_config
+        );
     }
 }

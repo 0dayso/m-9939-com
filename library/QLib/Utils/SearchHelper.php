@@ -19,49 +19,151 @@
 class QLib_Utils_SearchHelper {
     
     
-    public static function Q(){
+    private static $sphinx_filter_map = array(
+        'filter' => 'SetFilter',
+        'filter_range' => 'SetFilterRange',
+        'filter_floatrange' => 'SetFilterFloatRange'
+    );
+
+    public static function Q() {
         return Q_Search::factory();
     }
     
-	/**
-	 * 根据关键字全文搜索
-	 * @param string $keyword 关键词
-	 * @param string $indexer 搜索索引
-	 * @param int $offset
-	 * @param int $size
+    /**
+     * 
+     * @param type $queries  
+     * $queries = array(
+     *  'words1'=>array(
+     *      'word'=>'糖尿病',
+     *      'indexer'=>'*',//必须有
+     *      'offset'=>0,
+     *      'size'=>10,
+     *      'condition'=>array(array('filter'=>'filter_range','args'=>array('column_id',values))),
+     *      'explainflag'=>1,  //$explainflag 1:采用第三方分词 0:不采用第三方分词
+     *      'explain_ext_config'=>array() //分词的扩展配置
+     *  ),
+     * 'words2'=>array(
+     *      'word'=>'糖尿病',
+     *      'indexer'=>'*',//必须有
+     *      'offset'=>0,
+     *      'size'=>10,
+     *      'condition'=>array(array('filter'=>'filter_range','args'=>array('column_id',values))),
+     *      'explainflag'=>1,  //$explainflag 1:采用第三方分词 0:不采用第三方分词
+     *      'explain_ext_config'=>array() //分词的扩展配置
+     *  )
+     * );
+     * @return type
+     */
+    public static function batchSearch($queries = array()) {
+        $search = self::Q();
+        $explain_words = array();
+        $index_arr = array();
+        foreach ($queries as $k => $v) {
+            $kw = isset($v['word']) ? $v['word'] : '';
+            if (!empty($kw)) {
+                $keywords = $kw;
+                $indexer = isset($v['indexer']) ? $v['indexer'] : '*';
+                $offset = isset($v['offset']) ? $v['offset'] : 0;
+                $size = isset($v['size']) ? $v['size'] : 1;
+                $explainflag = isset($v['explainflag']) ? $v['explainflag'] : 1;
+                $condition = isset($v['condition']) ? $v['condition'] : array();
+                $explain_ext_config = isset($v['explain_ext_config']) ? $v['explain_ext_config'] : array();
+                $offset_limit = $offset + $size;
+                $total_offset = $offset_limit > 1000 ? 1000 : $offset_limit;
+                $search->SetLimits($offset, $size, $total_offset, 1000);
+                $search->SetMatchMode(SPH_MATCH_EXTENDED2); //匹配模式   1:SPH_MATCH_ANY 6:SPH_MATCH_EXTENDED2
+                $search->SetRankingMode(SPH_RANK_SPH04);
+                $search->SetSortMode(SPH_SORT_EXTENDED, "@weight DESC,@id DESC"); //排序方式   @param int $sort_mode 排序方式 4:SPH_SORT_EXTENDED
+                $search->SetFieldWeights(array('title' => 1000, 'name' => 1000));
+                if ($explainflag === 1) {
+                    $search->SetMatchMode(SPH_MATCH_EXTENDED2);
+                    $keywords = self::explainWords($keywords, $explain_ext_config);
+                }
+                if (count($condition) > 0) {
+                    foreach ($condition as $k => $v) {
+                        if (is_array($v) && (isset($v['filter']) && isset(self::$sphinx_filter_map[$v['filter']]))) {
+                            $filter_method = self::$sphinx_filter_map[$v['filter']];
+                            $param_arr = $v['args'];
+                            call_user_func_array(array($search, $filter_method), $param_arr);
+                        }
+                    }
+                }
+                $words = isset($keywords['kw']) ? $keywords['kw'] : $keywords;
+                $search->AddQuery($words, $indexer);
+                $search->ResetFilters();
+                $explain_words[] = isset($keywords['reg_words']) ? $keywords['reg_words'] : $keywords;
+                $index_arr[] = $indexer;
+            }
+        }
+        $result = $search->RunQueries();
+        $ret = array();
+        if (!empty($result)) {
+            foreach ($result as $k => $v) {
+                $v['explain_words'] = $explain_words[$k];
+                $v['indexer'] = $index_arr[$k];
+                if (!empty($v['matches'])) {
+                    $v['total'] = $v['total_found'] > 1000 ? 1000 : $v['total_found'];
+                }
+                $ret[] = $v;
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * 根据关键字全文搜索
+     * @param string $keyword 关键词
+     * @param string $indexer 搜索索引
+     * @param int $offset
+     * @param int $size
      * @param int $match_mode 匹配模式   1:SPH_MATCH_ANY 6:SPH_MATCH_EXTENDED2
      * @param int $sort_mode 排序方式   @param int $sort_mode 排序方式 4:SPH_SORT_EXTENDED
      * $conditions = array(
-			'column_id' => array(1)
-		);
+      array(
+      'filter'=>'filter_range',
+      'args'=>array($attribute,values)
+      )
+      );
+     * 
      * $explainflag 1:采用第三方分词 0:不采用第三方分词
-	 */
-	public static function Search($keyword, $indexer, $offset, $size,array $conditions = array(),$explainflag=1){
+     */
+    public static function Search($keyword, $indexer, $offset, $size, array $conditions = array(), $explainflag = 1, $explain_ext_config = array()) {
         $search = self::Q();
-        $search->SetLimits($offset,$size);
+        $offset_limit = $offset + $size;
+        $total_offset = $offset_limit > 1000 ? 1000 : $offset_limit;
+        $search->SetLimits($offset, $size, $total_offset, 1000);
         $search->SetMatchMode(SPH_MATCH_EXTENDED2);
         $search->SetRankingMode(SPH_RANK_SPH04);
-        $search->SetSortMode(SPH_SORT_EXTENDED,"@weight DESC,@id DESC");
-        $search->SetFieldWeights (array('title'=>1000));             
-        foreach ( $conditions as $k => $v ){
-			$search->SetFilter($k,$v);
-		}
-        if($explainflag===1){
-            $search->SetMatchMode(SPH_MATCH_EXTENDED2);
-            $keyword = self::explainWords($keyword);
+        $search->SetSortMode(SPH_SORT_EXTENDED, "@weight DESC");
+        $search->SetFieldWeights(array('title' => 1));
+        foreach ($conditions as $k => $v) {
+            if (is_array($v) && (isset($v['filter']) && isset(self::$sphinx_filter_map[$v['filter']]))) {
+                $filter_method = self::$sphinx_filter_map[$v['filter']];
+                $param_arr = $v['args'];
+                call_user_func_array(array($search, $filter_method), $param_arr);
+            }
         }
-        $words = isset($keyword['kw'])?$keyword['kw']:$keyword;
+        if ($explainflag === 1) {
+            $search->SetMatchMode(SPH_MATCH_EXTENDED2);
+            $keyword = self::explainWords($keyword, $explain_ext_config);
+        }
+        $words = isset($keyword['kw']) ? $keyword['kw'] : $keyword;
         $ret = $search->query($words, $indexer);
-        $ret['explain_words'] =isset($keyword['reg_words'])?$keyword['reg_words']:$keyword; 
+        $ret['explain_words'] = isset($keyword['reg_words']) ? $keyword['reg_words'] : $keyword;
+        $ret['kw'] = $words;
+        if (!empty($ret['matches'])) {
+            $ret['total'] = $ret['total_found'] > 1000 ? 1000 : $ret['total_found'];
+        }
         return $ret;
-	}
-    
-     /**
+    }
+
+    /**
      * 获取分词结果
      * @param string $words
+     * @param array $explain_ext_config
      * @return string
      */
-    public static function explainWords($words) {
+    public static function explainWords($words, $explain_ext_config = array()) {
         $explain_result = self::scws($words);
         $explode_wds = array();
         $reg_explode_wds = array();
@@ -69,15 +171,24 @@ class QLib_Utils_SearchHelper {
         $reg_explode_wds[] = sprintf('(%s)', $words);
         $sort_explain_result = self::sortExplainWords($explain_result, $words);
         $o_keywords = array();
+        $ext_keywords = array();
         foreach ($sort_explain_result as $k => $v) {
             $reg_explode_wds[] = sprintf('(%s)', $v);
             $o_keywords[] = sprintf('%s', $v);
+            $ext_keywords[] = sprintf('("%s"/%d)', $v, mb_strlen($v) / 3);
         }
         $ret = implode('', $o_keywords);
-        
-        $explode_wds[] = sprintf('("%s"/%d)', $words,  mb_strlen($words)/3);// sprintf('(^%s)', $words);
-        $explode_wds[] = sprintf('("%s"/%d)', $ret,  mb_strlen($ret)/3);
-        
+
+        $explode_wds[] = sprintf('("%s"/%d)', $words, mb_strlen($words) / 3); // sprintf('(^%s)', $words);
+        $explode_wds[] = sprintf('("%s"/%d)', $ret, mb_strlen($ret) / 3);
+
+        if (!empty($explain_ext_config)) {
+            if ($explain_ext_config['is_ext_words'] === 1) {
+                $ext_words = implode('|', $ext_keywords);
+                $explode_wds[] = $ext_words;
+            }
+        }
+
         $search_words = implode('|', $explode_wds);
         $reg_search_words = implode('|', $reg_explode_wds);
 //        var_dump($search_words);exit;

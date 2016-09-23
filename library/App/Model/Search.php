@@ -44,17 +44,6 @@ class App_Model_Search {
             $search_result = $wd_obj->list_forpaging($where, 'id desc', $size, $offset);
             $ret_list = $search_result['list'];
             $total = $search_result['total'];
-//            $search_result = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_v2_keywords', $offset, $size, $condition,0);
-//            if (!empty($search_result['matches'])) {
-//                $arr_ids = array();
-//                foreach ($search_result['matches'] as $k => $v) {
-//                    $arr_ids[] = $k;
-//                }
-////                $where = sprintf(' id in (%s)', implode(',', $arr_ids));
-////                $ret_list = $wd_obj->List_All($where);
-//                $ret_list = $wd_obj->List_ByIds($arr_ids);
-//                $total = $search_result['total'];
-//            }
         }
         return array('list' => $ret_list, 'total' => $total);
     }
@@ -66,20 +55,18 @@ class App_Model_Search {
      * typeid 1:问答词 2:资讯词
      */
 
-    public static function search_words_all($wd, $offset, $size, array $condition = array()) {
+    public static function search_words_all($wd, $offset, $size, array $condition = array(), $explainflag = 1, $explain_ext_config = array()) {
         $total = 0;
         $ret_list = array();
         $explain_words = array($wd);
         if (!empty($wd)) {
-            $search_result = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_v2_keywords_all', $offset, $size, $condition);
+            $search_result = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_v2_keywords_all', $offset, $size, $condition, $explainflag, $explain_ext_config);
             if (!empty($search_result['matches'])) {
                 $arr_ids = array();
                 $wd_obj = new App_Model_KeyWords();
                 foreach ($search_result['matches'] as $k => $v) {
                     $arr_ids[] = $k;
                 }
-//                $where = sprintf(' id in (%s)', implode(',', $arr_ids));
-//                $ret_list = $wd_obj->List_All($where);
                 $ret_list = $wd_obj->List_ByIds($arr_ids);
                 $total = $search_result['total'];
             }
@@ -92,12 +79,12 @@ class App_Model_Search {
      * 查询老疾病文章
      */
 
-    public static function search_dzjb_article($wd, $offset, $size) {
+    public static function search_dzjb_article($wd, $offset, $size, array $condition = array(), $explainflag = 1, $explain_ext_config = array()) {
         $total = 0;
         $ret_list = array();
         $explain_words = array($wd);
         if (!empty($wd)) {
-            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_dzjb_art', $offset, $size);
+            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_dzjb_art', $offset, $size, $condition, $explainflag, $explain_ext_config);
             $art_obj = new App_Model_Article();
             if (!empty($ret['matches'])) {
                 $arr_ids = array();
@@ -127,12 +114,12 @@ class App_Model_Search {
      * 查询疾病文章
      */
 
-    public static function search_jb_article($wd, $offset, $size) {
+    public static function search_jb_article($wd, $offset, $size, array $condition = array(), $explainflag = 1, $explain_ext_config = array()) {
         $total = 0;
         $ret_list = array();
         $explain_words = array($wd);
         if (!empty($wd)) {
-            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_jb_art', $offset, $size);
+            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_jb_art', $offset, $size, $condition, $explainflag, $explain_ext_config);
             $art_obj = new App_Model_Article();
             if (!empty($ret['matches'])) {
                 $arr_ids = array();
@@ -160,12 +147,12 @@ class App_Model_Search {
      * 查询资讯文章
      */
 
-    public static function search_zx_article($wd, $offset, $size) {
+    public static function search_zx_article($wd, $offset, $size, array $condition = array(), $explainflag = 1, $explain_ext_config = array()) {
         $total = 0;
         $ret_list = array();
         $explain_words = array($wd);
         if (!empty($wd)) {
-            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_v2_art', $offset, $size);
+            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_v2_art', $offset, $size, $condition, $explainflag, $explain_ext_config);
             $art_obj = new App_Model_Article();
             if (!empty($ret['matches'])) {
                 $arr_ids = array();
@@ -191,17 +178,17 @@ class App_Model_Search {
      * 查询词相关文章；优先疾病文章,然后资讯文章
      */
 
-    public static function search_relarticle($wd, $offset, $size) {
+    public static function search_relarticle($wd, $offset, $size, array $condition = array(), $explainflag = 1, $explain_ext_config = array()) {
         $total = 0;
         $ret_list = array();
         $explain_words = array($wd);
         if (!empty($wd)) {
-            $return_list = self::search_jb_article($wd, $offset, $size);
+            $return_list = self::search_jb_article($wd, $offset, $size, $condition, $explainflag, $explain_ext_config);
             $ret_list = $return_list['list'];
             $total = $return_list['total'];
             $diff_num = $size - count($ret_list);
             if ($diff_num > 0) {
-                $return_art_list = self::search_zx_article($wd, $offset, $diff_num);
+                $return_art_list = self::search_zx_article($wd, $offset, $diff_num, $condition, $explainflag, $explain_ext_config);
                 $art_list = $return_art_list['list'];
                 $art_total = $return_art_list['total'];
                 if ($art_total > 0) {
@@ -217,12 +204,12 @@ class App_Model_Search {
         return array('list' => $ret_list, 'total' => $total, 'explain_words' => $explain_words);
     }
 
-    public static function search_article($wd, $offset, $size) {
+    public static function search_article($wd, $offset, $size, array $condition = array(), $explainflag = 1, $explain_ext_config = array()) {
         $total = 0;
         $ret_list = array();
         $explain_words = array($wd);
         if (!empty($wd)) {
-            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_dzjb_art,index_9939_com_v2_art', $offset, $size);
+            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_9939_com_jb_art,index_9939_com_v2_art', $offset, $size, $condition, $explainflag, $explain_ext_config);
             $art_obj = new App_Model_Article();
             if (!empty($ret['matches'])) {
                 $zx_art_ids = array();
@@ -270,12 +257,12 @@ class App_Model_Search {
      * 查询词相关问答
      */
 
-    public static function search_ask($wd, $offset, $size) {
+    public static function search_ask($wd, $offset, $size, array $condition = array(), $explainflag = 1, $explain_ext_config = array()) {
         $total = 0;
         $ask_res_list = array();
         $explain_words = array($wd);
         if (!empty($wd)) {
-            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_wd_ask,index_wd_ask_history_1,index_wd_ask_history_2,index_wd_ask_history_3,index_wd_ask_history_4,index_wd_ask_history_5,index_wd_ask_history_6', $offset, $size);
+            $ret = QLib_Utils_SearchHelper::Search($wd, 'index_wd_ask,index_wd_ask_history_1,index_wd_ask_history_2,index_wd_ask_history_3,index_wd_ask_history_4,index_wd_ask_history_5,index_wd_ask_history_6,index_wd_ask_history_7', $offset, $size, $condition, $explainflag, $explain_ext_config);
             $ret_list = array();
             $ask_obj = new App_Model_Ask();
             $answer_obj = new App_Model_Answer();
